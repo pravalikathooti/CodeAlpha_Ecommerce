@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout - My Store</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        .header {
+            background: #222;
+            color: white;
+            padding: 18px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            margin: 0;
+        }
+
+        .header a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+
+        .header a:hover {
+            color: #ddd;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .box h2 {
+            margin-top: 0;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 5px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 18px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        /* Payment */
+        .payment-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0 15px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .payment-option:hover {
+            background: #f8f8f8;
+        }
+
+        .payment-option input {
+            width: auto;
+            margin: 0 10px 0 0;
+        }
+
+        .payment-option span {
+            font-weight: bold;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #218838;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .item-name {
+            flex: 1;
+        }
+
+        .item-price {
+            font-weight: bold;
+        }
+
+        .total {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .secure {
+            margin-top: 20px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            text-align: center;
+            color: #555;
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+
+    <h2>🛍️ My Store</h2>
+
+    <div>
+        <a href="{% url 'home' %}">
+            Home
+        </a>
+
+        <a href="{% url 'cart' %}">
+            Cart
+        </a>
+    </div>
+
+</div>
+
+
+<div class="container">
+
+    <!-- Customer Details -->
+
+    <div class="box">
+
+        <h2>📦 Shipping Details</h2>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <label>Full Name</label>
+
+            <input
+                type="text"
+                name="name"
+                placeholder="Enter your full name"
+                required
+            >
+
+
+            <label>Email</label>
+
+            <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+
+
+            <label>Phone Number</label>
+
+            <input
+                type="tel"
+                name="phone"
+                placeholder="Enter 10-digit phone number"
+                pattern="[0-9]{10}"
+                maxlength="10"
+                required
+            >
+
+
+            <label>Full Address</label>
+
+            <textarea
+                name="address"
+                placeholder="Enter your complete address"
+                rows="4"
+                required
+            ></textarea>
+
+
+            <label>City</label>
+
+            <input
+                type="text"
+                name="city"
+                placeholder="Enter your city"
+                required
+            >
+
+
+            <label>Pincode</label>
+
+            <input
+                type="text"
+                name="pincode"
+                placeholder="Enter 6-digit pincode"
+                pattern="[0-9]{6}"
+                maxlength="6"
+                required
+            >
+
+
+            <!-- Payment Method -->
+
+            <div class="payment-title">
+                💳 Payment Method
+            </div>
+
+
+            <label class="payment-option">
+
+                <input
+                    type="radio"
+                    name="payment_method"
+                    value="Cash on Delivery"
+                    required
+                >
+
+                <span>
+                    💵 Cash on Delivery
+                </span>
+
+            </label>
+
+
+            <label class="payment-option">
+
+                <input
+                    type="radio"
+                    name="payment_method"
+                    value="Credit/Debit Card"
+                >
+
+                <span>
+                    💳 Credit/Debit Card
+                </span>
+
+            </label>
+
+
+            <label class="payment-option">
+
+                <input
+                    type="radio"
+                    name="payment_method"
+                    value="UPI"
+                >
+
+                <span>
+                    📱 UPI
+                </span>
+
+            </label>
+
+
+            <button type="submit">
+                🛒 Place Order
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- Order Summary -->
+
+    <div class="box">
+
+        <h2>🧾 Order Summary</h2>
+
+        {% for item in products %}
+
+        <div class="item">
+
+            <span class="item-name">
+                {{ item.product.name }}
+                × {{ item.quantity }}
+            </span>
+
+            <span class="item-price">
+                ₹{{ item.subtotal }}
+            </span>
+
+        </div>
+
+        {% endfor %}
+
+
+        <hr>
+
+
+        <div class="total">
+            Total: ₹{{ total }}
+        </div>
+
+
+        <div class="secure">
+            🔒 Your order information is securely processed.
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

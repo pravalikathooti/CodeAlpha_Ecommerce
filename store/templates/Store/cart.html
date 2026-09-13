@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopping Cart - My Store</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        /* Header */
+        .header {
+            background: #222;
+            color: white;
+            padding: 18px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: bold;
+        }
+
+        .nav a:hover {
+            color: #ddd;
+        }
+
+        /* Cart */
+        .cart-container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+
+        .cart-container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .cart-item {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .product-image {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-info h2 {
+            margin-top: 0;
+        }
+
+        .price {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .quantity {
+            margin: 15px 0;
+        }
+
+        .quantity a {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 0 5px;
+            background: #eee;
+            color: #222;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .quantity a:hover {
+            background: #ddd;
+        }
+
+        .subtotal {
+            font-weight: bold;
+        }
+
+        .remove {
+            color: #dc3545;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Total */
+        .cart-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: right;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .total {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .checkout-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .home-btn {
+            background: #555;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+        }
+
+        /* Empty cart */
+        .empty-cart {
+            background: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 50px;
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Mobile */
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .nav a {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cart-summary {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+
+        <div class="logo">
+            🛍️ My Store
+        </div>
+
+        <nav class="nav">
+            <a href="{% url 'home' %}">Home</a>
+
+            <a href="{% url 'cart' %}">
+                🛒 Cart
+            </a>
+        </nav>
+
+    </header>
+
+
+    <!-- Cart -->
+    <div class="cart-container">
+
+        <h1>🛒 Shopping Cart</h1>
+
+        {% if products %}
+
+            {% for item in products %}
+
+                <div class="cart-item">
+
+                    <!-- Product Image -->
+                    {% if item.product.image %}
+
+                        <img
+                            src="{{ item.product.image.url }}"
+                            alt="{{ item.product.name }}"
+                            class="product-image"
+                        >
+
+                    {% else %}
+
+                        <div class="product-image">
+                            No Image
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Product Information -->
+                    <div class="product-info">
+
+                        <h2>
+                            {{ item.product.name }}
+                        </h2>
+
+                        <p class="price">
+                            ₹{{ item.product.price }}
+                        </p>
+
+
+                        <!-- Quantity -->
+                        <div class="quantity">
+
+                            Quantity:
+
+                            <a href="{% url 'decrease_quantity' item.product.id %}">
+                                −
+                            </a>
+
+                            <strong>
+                                {{ item.quantity }}
+                            </strong>
+
+                            <a href="{% url 'increase_quantity' item.product.id %}">
+                                +
+                            </a>
+
+                        </div>
+
+
+                        <p class="subtotal">
+                            Subtotal: ₹{{ item.subtotal }}
+                        </p>
+
+
+                        <a
+                            href="{% url 'remove_from_cart' item.product.id %}"
+                            class="remove"
+                        >
+                            ❌ Remove
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+
+            <!-- Summary -->
+            <div class="cart-summary">
+
+                <div class="total">
+                    Total: ₹{{ total }}
+                </div>
+
+                <a
+                    href="{% url 'home' %}"
+                    class="btn home-btn"
+                >
+                    Continue Shopping
+                </a>
+
+                <a
+                    href="{% url 'checkout' %}"
+                    class="btn checkout-btn"
+                >
+                    Proceed to Checkout
+                </a>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-cart">
+
+                <h2>Your cart is empty 🛒</h2>
+
+                <p>
+                    Add some products to your cart to continue shopping.
+                </p>
+
+                <a
+                    href="{% url 'home' %}"
+                    class="btn home-btn"
+                >
+                    Start Shopping
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Footer -->
+    <footer>
+
+        © 2026 My E-Commerce Store |
+        All Rights Reserved
+
+    </footer>
+
+</body>
+</html>
